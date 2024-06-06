@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Release-note-none for bots
-        if: contains(fromJson($BOTS), github.actor)
+        if: contains(fromJson(${{ env.BOTS }}), github.actor)
         run: |
           gh pr edit "$PR_URL" --add-label "release-note-none"
           exit 0
@@ -28,7 +28,7 @@ jobs:
           PR_URL: ${{github.event.pull_request.html_url}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Remove old PR labels
-        if: "!contains(fromJson($BOTS), github.actor)"
+        if: "!contains(fromJson(${{ env.BOTS }}), github.actor)"
         uses: mondeja/remove-labels-gh-action@v2.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -39,7 +39,7 @@ jobs:
             kind/CHANGE
             release-note-none
       - name: Add label to PR
-        if: "!contains(fromJson($BOTS), github.actor)"
+        if: "!contains(fromJson(${{ env.BOTS }}), github.actor)"
         id: labeler
         uses: jimschubert/labeler-action@v1
         with:
@@ -47,7 +47,7 @@ jobs:
 # Adjust the configuration in /.github/labeler.yml
 
       - name: Verify Label
-        if: "!contains(fromJson($BOTS), github.actor)"
+        if: "!contains(fromJson(${{ env.BOTS }}), github.actor)"
         id: preview_label_check
         uses: docker://agilepathway/pull-request-label-checker:latest
         with:
@@ -56,7 +56,7 @@ jobs:
           allow_failure: true
       - name: Comment on Label Check Failure
         uses: thollander/actions-comment-pull-request@v2.5.0
-        if: steps.preview_label_check.outputs.label_check == 'failure' && !contains(fromJson($BOTS), github.actor)
+        if: steps.preview_label_check.outputs.label_check == 'failure' && !contains(fromJson(${{ env.BOTS }}), github.actor)
         with:
           message: |
             PR body does not contain a valid type of change. Please refer to [CONTRIBUTING.md](https://github.com/prometheus/client_golang/blob/main/CONTRIBUTING.md#how-to-write-a-pr-description) for more information.
@@ -64,7 +64,7 @@ jobs:
           mode: recreate
       - name: Remove Label Check Failure Comment
         uses: thollander/actions-comment-pull-request@v2.5.0
-        if: steps.preview_label_check.outputs.label_check == 'success' && !contains(fromJson($BOTS), github.actor)
+        if: steps.preview_label_check.outputs.label_check == 'success' && !contains(fromJson(${{ env.BOTS }}), github.actor)
         with:
           message: |
             PR body contains a valid type of change.
@@ -72,5 +72,5 @@ jobs:
           mode: delete
           create_if_not_exists: false
       - name: Exit on Failure
-        if: steps.preview_label_check.outputs.label_check == 'failure' && !contains(fromJson($BOTS), github.actor)
+        if: steps.preview_label_check.outputs.label_check == 'failure' && !contains(fromJson(${{ env.BOTS }}), github.actor)
         run: exit 1
