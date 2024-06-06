@@ -12,7 +12,7 @@ permissions:
     checks: write # to generate status
 
 env:
-  BOTS: ["dependabot[bot]", "github-actions[bot]", "prombot"]
+  BOTS: '["dependabot[bot]", "github-actions[bot]", "prombot"]'
 
 jobs:
   changelog-automation:
