@@ -27,7 +27,7 @@ jobs:
           PR_URL: ${{github.event.pull_request.html_url}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Remove old PR labels
-        if: !contains(fromJson($BOTS), github.actor)
+        if: "!contains(fromJson($BOTS), github.actor)"
         uses: mondeja/remove-labels-gh-action@v2.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -38,7 +38,7 @@ jobs:
             kind/CHANGE
             release-note-none
       - name: Add label to PR
-        if: !contains(fromJson($BOTS), github.actor)
+        if: "!contains(fromJson($BOTS), github.actor)"
         id: labeler
         uses: jimschubert/labeler-action@v1
         with:
@@ -46,7 +46,7 @@ jobs:
 # Adjust the configuration in /.github/labeler.yml
 
       - name: Verify Label
-        if: !contains(fromJson($BOTS), github.actor)
+        if: "!contains(fromJson($BOTS), github.actor)"
         id: preview_label_check
         uses: docker://agilepathway/pull-request-label-checker:latest
         with:
