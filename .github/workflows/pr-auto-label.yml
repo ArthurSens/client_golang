@@ -11,11 +11,12 @@ permissions:
     statuses: write # to generate status
     checks: write # to generate status
 
+env:
+  BOTS: '["dependabot[bot]", "github-actions[bot]", "prombot"]'
+
 jobs:
   changelog-automation:
     name: Changelog automation
-    env:
-      BOTS: ["dependabot[bot]", "github-actions[bot]", "prombot"]
     runs-on: ubuntu-latest
     steps:
       - name: Release-note-none for bots
