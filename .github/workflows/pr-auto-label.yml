@@ -11,10 +11,14 @@ permissions:
     statuses: write # to generate status
     checks: write # to generate status
 
+env:
+  BOTS: '["dependabot[bot]", "github-actions[bot]", "prombot"]'
+
 jobs:
   changelog-automation:
     name: Changelog automation
     runs-on: ubuntu-latest
+    if: "!contains(fromJson(${{ env.BOTS }}), github.actor)"
     steps:
       - name: Remove old PR labels
         uses: mondeja/remove-labels-gh-action@v2.0.0
