@@ -18,9 +18,9 @@ jobs:
   skip-changelog-automation-for-bots:
     name: Skip changelog automation for bots
     runs-on: ubuntu-latest
-    steps:
     if: "contains(fromJson(${{ env.BOTS }}), github.actor)"
-    run: exit 0
+    steps:
+      run: exit 0
   changelog-automation:
     name: Changelog automation
     runs-on: ubuntu-latest
