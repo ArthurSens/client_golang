@@ -18,13 +18,13 @@ jobs:
   skip-changelog-automation-for-bots:
     name: Skip changelog automation for bots
     runs-on: ubuntu-latest
-    if: "contains(fromJson(${{ env.BOTS }}), github.actor)"
+    if: contains('["dependabot[bot]", "github-actions[bot]", "prombot"]', github.actor)
     steps:
       - run: exit 0
   changelog-automation:
     name: Changelog automation
     runs-on: ubuntu-latest
-    if: "!contains(fromJson(${{ env.BOTS }}), github.actor)"
+    if: "!contains('["dependabot[bot]", "github-actions[bot]", "prombot"]', github.actor)"
     steps:
       - name: Remove old PR labels
         uses: mondeja/remove-labels-gh-action@v2.0.0
