@@ -79,9 +79,9 @@ jobs:
           - skip-changelog-automation-for-bots
         runs-on: ubuntu-latest
         steps:
-          - name: Mark the job as a success
-            if: needs.changelog-automation.result == 'success' && needs.skip-changelog-automation-for-bots.result == 'success'
+          - name: mark the job as a success
+            if: needs.changelog-automation.result == 'success' || needs.skip-changelog-automation-for-bots.result == 'success'
             run: exit 0
           - name: Mark the job as a failure
-            if: needs.changelog-automation.result != 'success' || needs.skip-changelog-automation-for-bots.result != 'success'
+            if: failure()
             run: exit 1
