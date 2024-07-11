@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     if: "contains(fromJson(${{ env.BOTS }}), github.actor)"
     steps:
-      run: exit 0
+      - run: exit 0
   changelog-automation:
     name: Changelog automation
     runs-on: ubuntu-latest
