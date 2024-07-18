@@ -11,20 +11,17 @@ permissions:
     statuses: write # to generate status
     checks: write # to generate status
 
-env:
-  BOTS: '["dependabot[bot]", "github-actions[bot]", "prombot"]'
-
 jobs:
   skip-changelog-automation-for-bots:
     name: Skip changelog automation for bots
     runs-on: ubuntu-latest
-    if: contains('["dependabot[bot]", "github-actions[bot]", "prombot"]', github.actor)
+    if: contains(${{ vars.KNOWN_BOTS }}, github.actor)
     steps:
       - run: exit 0
   changelog-automation:
     name: Changelog automation
     runs-on: ubuntu-latest
-    if: "!contains('["dependabot[bot]", "github-actions[bot]", "prombot"]', github.actor)"
+    if: "!contains(${{ vars.KNOWN_BOTS }}, github.actor)"
     steps:
       - name: Remove old PR labels
         uses: mondeja/remove-labels-gh-action@v2.0.0
@@ -71,17 +68,17 @@ jobs:
         if: steps.preview_label_check.outputs.label_check == 'failure'
         run: exit 1
 
-    changelog-automation-results:
-        name: End-to-End Test Results
-        if: always()
-        needs:
-          - changelog-automation
-          - skip-changelog-automation-for-bots
-        runs-on: ubuntu-latest
-        steps:
-          - name: mark the job as a success
-            if: needs.changelog-automation.result == 'success' || needs.skip-changelog-automation-for-bots.result == 'success'
-            run: exit 0
-          - name: Mark the job as a failure
-            if: failure()
-            run: exit 1
+  changelog-automation-results:
+      name: End-to-End Test Results
+      if: always()
+      needs:
+        - changelog-automation
+        - skip-changelog-automation-for-bots
+      runs-on: ubuntu-latest
+      steps:
+        - name: mark the job as a success
+          if: needs.changelog-automation.result == 'success' || needs.skip-changelog-automation-for-bots.result == 'success'
+          run: exit 0
+        - name: Mark the job as a failure
+          if: failure()
+          run: exit 1
