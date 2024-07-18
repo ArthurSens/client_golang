@@ -15,18 +15,19 @@ jobs:
   succeed-changelog-automation-for-bots:
     name: Skip changelog automation for bots
     runs-on: ubuntu-latest
-    if: contains(${{ vars.KNOWN_BOTS }}, github.github.event.pull_request.user.login)
+    if: contains(fromJson(${{ vars.KNOWN_BOTS }}), github.github.event.pull_request.user.login)
     steps:
       - run: exit 0
   changelog-automation-for-humans:
     name: Changelog automation
     runs-on: ubuntu-latest
-    if: "!contains(${{ vars.KNOWN_BOTS }}, github.github.event.pull_request.user.login)"
+    if: "!contains(fromJson(${{ vars.KNOWN_BOTS }}), github.github.event.pull_request.user.login)"
     steps:
       - name: debug conditional
         run: |
           echo "${{ vars.KNOWN_BOTS }}"
           echo "${{ github.event.pull_request.user.login }}"
+          echo "${{ fromJson(vars.KNOWN_BOTS) }}"
       - name: Remove old PR labels
         uses: mondeja/remove-labels-gh-action@v2.0.0
         with:
