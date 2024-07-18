@@ -18,11 +18,15 @@ jobs:
     if: contains(${{ vars.KNOWN_BOTS }}, github.actor)
     steps:
       - run: exit 0
-  changelog-automation:
+  changelog-automation-for-humans:
     name: Changelog automation
     runs-on: ubuntu-latest
     if: "!contains(${{ vars.KNOWN_BOTS }}, github.actor)"
     steps:
+      - name: debug conditional
+        run: |
+          echo "${{ vars.KNOWN_BOTS }}"
+          echo "${{ github.actor }}"
       - name: Remove old PR labels
         uses: mondeja/remove-labels-gh-action@v2.0.0
         with:
@@ -72,12 +76,12 @@ jobs:
       name: End-to-End Test Results
       if: always()
       needs:
-        - changelog-automation
+        - changelog-automation-for-humans
         - skip-changelog-automation-for-bots
       runs-on: ubuntu-latest
       steps:
         - name: mark the job as a success
-          if: needs.changelog-automation.result == 'success' || needs.skip-changelog-automation-for-bots.result == 'success'
+          if: needs.changelog-automation-for-humans.result == 'success' || needs.skip-changelog-automation-for-bots.result == 'success'
           run: exit 0
         - name: Mark the job as a failure
           if: failure()
